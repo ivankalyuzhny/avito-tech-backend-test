@@ -1,0 +1,13 @@
+database:
+  driver: postgres
+  host: db
+  port: 5432
+  user: postgres
+  password: secret
+  name: avito_test_db
+  sslmode: disable
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  timeout: 3
