@@ -28,8 +28,8 @@ func (s *UserService) EditSegments(userID int64, segmentSlugsAdd []string, segme
 		return fmt.Errorf("user (id=%d) not found", userID)
 	}
 	segmentSlugsAddUnique, segmentSlugsDelUnique := utils.RemoveIntersections(
-		utils.Unique(segmentSlugsAdd),
-		utils.Unique(segmentSlugsDel),
+		utils.RemoveRepeats(segmentSlugsAdd),
+		utils.RemoveRepeats(segmentSlugsDel),
 	)
 	segmentIDsAdd := make([]int64, len(segmentSlugsAddUnique))
 	for i, segmentSlug := range segmentSlugsAddUnique {

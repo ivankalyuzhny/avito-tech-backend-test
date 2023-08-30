@@ -1,6 +1,6 @@
 package utils
 
-func Unique(slice []string) []string {
+func RemoveRepeats(slice []string) []string {
 	keys := make(map[string]bool)
 	list := make([]string, 0)
 	for _, entry := range slice {
