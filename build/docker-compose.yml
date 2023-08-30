@@ -19,7 +19,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: avito_test_db
     healthcheck:
-      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
-      timeout: 3s
-      retries: 3
+      timeout: 5s
+      retries: 5
