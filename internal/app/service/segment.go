@@ -17,7 +17,7 @@ func NewSegmentService(repo *repository.SegmentRepository) *SegmentService {
 
 func (s *SegmentService) Create(slug string) error {
 	segment := model.NewSegment(0, slug)
-	_, err := s.repo.Create(segment)
+	err := s.repo.Create(segment)
 	if err != nil {
 		return err
 	}
