@@ -14,8 +14,8 @@ import (
 func RegisterSegmentHandlers(router *mux.Router, segmentService *service.SegmentService) {
 	handler := NewSegmentHandler(segmentService)
 
-	router.HandleFunc("/segments", handler.CreateSegment).Methods("POST")
-	router.HandleFunc("/segments/{slug}", handler.DeleteSegment).Methods("DELETE")
+	router.HandleFunc("/segments", handler.CreateSegment).Methods(http.MethodPost)
+	router.HandleFunc("/segments/{slug}", handler.DeleteSegment).Methods(http.MethodDelete)
 }
 
 type SegmentHandler struct {
@@ -53,13 +53,13 @@ func (h *SegmentHandler) CreateSegment(w http.ResponseWriter, r *http.Request) {
 		response.WriteError(w, nil, http.StatusUnprocessableEntity, err)
 	}
 
-	segment, err := h.segmentService.Create(input.Slug)
+	err = h.segmentService.Create(input.Slug)
 	if err != nil {
 		response.WriteError(w, nil, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.WriteResponse(w, nil, http.StatusCreated, segment)
+	response.WriteResponse(w, nil, http.StatusCreated, nil)
 }
 
 func (h *SegmentHandler) DeleteSegment(w http.ResponseWriter, r *http.Request) {

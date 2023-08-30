@@ -15,14 +15,13 @@ func NewSegmentService(repo *repository.SegmentRepository) *SegmentService {
 	}
 }
 
-func (s *SegmentService) Create(slug string) (*model.Segment, error) {
+func (s *SegmentService) Create(slug string) error {
 	segment := model.NewSegment(0, slug)
-	insertID, err := s.repo.Create(segment)
+	_, err := s.repo.Create(segment)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	segment.ID = insertID
-	return segment, nil
+	return nil
 }
 
 func (s *SegmentService) Delete(slug string) error {

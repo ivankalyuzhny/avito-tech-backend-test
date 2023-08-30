@@ -16,7 +16,7 @@ func RegisterUserHandlers(router *mux.Router, userService *service.UserService) 
 	handler := NewUserHandler(userService)
 
 	router.HandleFunc("/users/{id}/segments", handler.FindUserSegments).Methods(http.MethodGet)
-	router.HandleFunc("/users/{id}/segments", handler.EditUserSegments).Methods(http.MethodPut)
+	router.HandleFunc("/users/{id}/segments", handler.UpdateUserSegments).Methods(http.MethodPut)
 }
 
 type UserHandler struct {
@@ -37,7 +37,7 @@ func (h *UserHandler) FindUserSegments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userSegments, err := h.userService.FindSegmentsByUserID(userID)
+	userSegments, err := h.userService.FindUserSegments(userID)
 	if err != nil {
 		response.WriteError(w, nil, http.StatusInternalServerError, err)
 		return
@@ -46,7 +46,7 @@ func (h *UserHandler) FindUserSegments(w http.ResponseWriter, r *http.Request) {
 	response.WriteResponse(w, nil, http.StatusOK, userSegments)
 }
 
-func (h *UserHandler) EditUserSegments(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userID, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
@@ -70,7 +70,7 @@ func (h *UserHandler) EditUserSegments(w http.ResponseWriter, r *http.Request) {
 		response.WriteError(w, nil, http.StatusUnprocessableEntity, err)
 	}
 
-	err = h.userService.EditSegments(userID, input.SegmentsAdd, input.SegmentsDel)
+	err = h.userService.UpdateUserSegments(userID, input.SegmentsAdd, input.SegmentsDel)
 	if err != nil {
 		response.WriteError(w, nil, http.StatusInternalServerError, err)
 		return

@@ -54,7 +54,7 @@ func (r *UserRepository) RemoveFromSegment(userID int64, segmentID int64) error 
 	return nil
 }
 
-func (r *UserRepository) FindSegmentsByUserID(userID int64) ([]*model.Segment, error) {
+func (r *UserRepository) FindUserSegments(userID int64) ([]*model.Segment, error) {
 	var segments []*model.Segment
 	query := `SELECT s.id, s.slug FROM segments s JOIN user_segments us ON s.id = us.segment_id WHERE us.user_id = $1`
 	err := r.db.Select(&segments, query, userID)
@@ -65,7 +65,7 @@ func (r *UserRepository) FindSegmentsByUserID(userID int64) ([]*model.Segment, e
 	return segments, nil
 }
 
-func (r *UserRepository) EditUserSegments(userID int64, segmentIDsAdd []int64, segmentIDsDel []int64) error {
+func (r *UserRepository) UpdateUserSegment(userID int64, segmentIDsAdd []int64, segmentIDsDel []int64) error {
 	tx, err := r.db.Beginx()
 	if err != nil {
 		return fmt.Errorf("failed to start transaction: %w", err)

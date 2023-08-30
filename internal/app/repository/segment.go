@@ -18,15 +18,15 @@ func NewSegmentRepository(db *sqlx.DB) *SegmentRepository {
 	}
 }
 
-func (r *SegmentRepository) Create(segment *model.Segment) (int64, error) {
+func (r *SegmentRepository) Create(segment *model.Segment) error {
 	query := `INSERT INTO segments (slug) VALUES ($1) RETURNING id`
 	var insertID int64
 	err := r.db.QueryRow(query, segment.Slug).Scan(&insertID)
 	if err != nil {
-		return -1, fmt.Errorf("failed to create segment (slug=%s):%w", segment.Slug, err)
+		return fmt.Errorf("failed to create segment (slug=%s):%w", segment.Slug, err)
 	}
 	log.Printf("created segment (id=%d slug=%s)", insertID, segment.Slug)
-	return insertID, err
+	return nil
 }
 
 func (r *SegmentRepository) Delete(slug string) error {

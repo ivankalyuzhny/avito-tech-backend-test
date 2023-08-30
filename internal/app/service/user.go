@@ -19,7 +19,7 @@ func NewUserService(userRepo *repository.UserRepository, segmentRepo *repository
 	}
 }
 
-func (s *UserService) EditSegments(userID int64, segmentSlugsAdd []string, segmentSlugsDel []string) error {
+func (s *UserService) UpdateUserSegments(userID int64, segmentSlugsAdd []string, segmentSlugsDel []string) error {
 	exists, err := s.userRepo.Exists(userID)
 	if err != nil {
 		return err
@@ -47,7 +47,7 @@ func (s *UserService) EditSegments(userID int64, segmentSlugsAdd []string, segme
 		}
 		segmentIDsDel[i] = segment.ID
 	}
-	err = s.userRepo.EditUserSegments(userID, segmentIDsAdd, segmentIDsDel)
+	err = s.userRepo.UpdateUserSegment(userID, segmentIDsAdd, segmentIDsDel)
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func (s *UserService) RemoveFromSegments(userID int64, segmentSlugs []string) er
 	return nil
 }
 
-func (s *UserService) FindSegmentsByUserID(userID int64) ([]*model.Segment, error) {
+func (s *UserService) FindUserSegments(userID int64) ([]*model.Segment, error) {
 	exists, err := s.userRepo.Exists(userID)
 	if err != nil {
 		return nil, err
@@ -104,5 +104,5 @@ func (s *UserService) FindSegmentsByUserID(userID int64) ([]*model.Segment, erro
 	if !exists {
 		return nil, fmt.Errorf("user (id=%d) not found", userID)
 	}
-	return s.userRepo.FindSegmentsByUserID(userID)
+	return s.userRepo.FindUserSegments(userID)
 }
