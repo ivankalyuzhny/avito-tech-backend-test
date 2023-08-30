@@ -1,23 +1,21 @@
 BINARY_NAME=avito-tech-backend-test
 
 build:
-	GOARCH=amd64 GOOS=darwin go build -o ${BINARY_NAME}-darwin main.go
-	GOARCH=amd64 GOOS=linux go build -o ${BINARY_NAME}-linux main.go
-	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows main.go
+	go build -o ${BINARY_NAME} ./cmd/user-segmentation-service/main.go
+.PHONY: build
 
 run: build
 	./${BINARY_NAME}
 
 clean:
 	go clean
-	rm ${BINARY_NAME}-darwin
-	rm ${BINARY_NAME}-linux
-	rm ${BINARY_NAME}-windows
+	rm ${BINARY_NAME}
+.PHONY: build
 
 test:
 	go test ./...
 
-test_coverage:
+coverage:
 	go test ./... -coverprofile=coverage.out
 
 dep:
@@ -30,4 +28,8 @@ lint:
 	golangci-lint run ./...
 
 up:
-	docker-compose -f build/docker-compose.yml up
+	docker-compose -f build/docker-compose.yml -p ${BINARY_NAME} up --force-recreate --build -d
+
+down:
+	docker-compose -f build/docker-compose.yml -p ${BINARY_NAME} down
+
