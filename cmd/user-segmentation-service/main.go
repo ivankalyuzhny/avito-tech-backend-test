@@ -88,6 +88,6 @@ func main() {
 		ReadHeaderTimeout: time.Duration(config.Server.Timeout) * time.Second,
 	}
 
-	log.Printf("Starting server on %s:%d", config.Server.Host, config.Server.Port)
+	log.Printf("Starting server at %s:%d", config.Server.Host, config.Server.Port)
 	log.Fatal(server.ListenAndServe())
 }
