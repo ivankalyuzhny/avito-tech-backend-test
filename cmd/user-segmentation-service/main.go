@@ -1,6 +1,7 @@
 package main
 
 import (
+	"avito-tech-backend-test/internal/app/repository"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,7 +14,6 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"avito-tech-backend-test/internal/app/handler"
-	"avito-tech-backend-test/internal/app/repository"
 	"avito-tech-backend-test/internal/app/service"
 )
 

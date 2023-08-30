@@ -6,10 +6,10 @@ import (
 )
 
 type SegmentService struct {
-	repo *repository.SegmentRepository
+	repo repository.SegmentRepository
 }
 
-func NewSegmentService(repo *repository.SegmentRepository) *SegmentService {
+func NewSegmentService(repo repository.SegmentRepository) *SegmentService {
 	return &SegmentService{
 		repo: repo,
 	}
@@ -17,7 +17,7 @@ func NewSegmentService(repo *repository.SegmentRepository) *SegmentService {
 
 func (s *SegmentService) Create(slug string) error {
 	segment := model.NewSegment(0, slug)
-	err := s.repo.Create(segment)
+	err := s.repo.CreateSegment(segment)
 	if err != nil {
 		return err
 	}
@@ -25,6 +25,6 @@ func (s *SegmentService) Create(slug string) error {
 }
 
 func (s *SegmentService) Delete(slug string) error {
-	err := s.repo.Delete(slug)
+	err := s.repo.DeleteSegment(slug)
 	return err
 }
