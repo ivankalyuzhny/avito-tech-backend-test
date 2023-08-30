@@ -33,39 +33,24 @@ func (h *UserHandler) FindUserSegments(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userID, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusBadRequest,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusBadRequest, err)
 		return
 	}
 
 	userSegments, err := h.userService.FindSegmentsByUserID(userID)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusInternalServerError,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.WriteResponse(
-		w,
-		map[string]string{"Content-Type": "application/json"},
-		http.StatusOK,
-		userSegments,
-	)
+	response.WriteResponse(w, nil, http.StatusOK, userSegments)
 }
 
 func (h *UserHandler) EditUserSegments(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userID, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		response.WriteError(w, nil, http.StatusBadRequest, err)
 		return
 	}
 
@@ -75,41 +60,21 @@ func (h *UserHandler) EditUserSegments(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusBadRequest,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusBadRequest, err)
 		return
 	}
 
 	validate := validator.New()
 	err = validate.Struct(input)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusUnprocessableEntity,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusUnprocessableEntity, err)
 	}
 
 	err = h.userService.EditSegments(userID, input.SegmentsAdd, input.SegmentsDel)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusInternalServerError,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.WriteResponse(
-		w,
-		map[string]string{"Content-Type": "application/json"},
-		http.StatusOK,
-		nil,
-	)
+	response.WriteResponse(w, nil, http.StatusOK, nil)
 }

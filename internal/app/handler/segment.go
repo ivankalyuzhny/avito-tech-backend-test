@@ -39,52 +39,27 @@ func (h *SegmentHandler) CreateSegment(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusBadRequest,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusBadRequest, err)
 		return
 	}
 
 	validate := validator.New()
 	err = validate.RegisterValidation("notempty", notEmpty)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusInternalServerError,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusInternalServerError, err)
 	}
 	err = validate.Struct(input)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusUnprocessableEntity,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusUnprocessableEntity, err)
 	}
 
 	segment, err := h.segmentService.Create(input.Slug)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusInternalServerError,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.WriteResponse(
-		w,
-		map[string]string{"Content-Type": "application/json"},
-		http.StatusCreated,
-		segment,
-	)
+	response.WriteResponse(w, nil, http.StatusCreated, segment)
 }
 
 func (h *SegmentHandler) DeleteSegment(w http.ResponseWriter, r *http.Request) {
@@ -93,19 +68,9 @@ func (h *SegmentHandler) DeleteSegment(w http.ResponseWriter, r *http.Request) {
 
 	err := h.segmentService.Delete(slug)
 	if err != nil {
-		response.WriteResponse(
-			w,
-			map[string]string{"Content-Type": "application/json"},
-			http.StatusInternalServerError,
-			err.Error(),
-		)
+		response.WriteError(w, nil, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.WriteResponse(
-		w,
-		map[string]string{"Content-Type": "application/json"},
-		http.StatusOK,
-		nil,
-	)
+	response.WriteResponse(w, nil, http.StatusOK, nil)
 }
