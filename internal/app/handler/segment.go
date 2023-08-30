@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 
 	"avito-tech-backend-test/internal/app/service"
@@ -28,8 +29,12 @@ func NewSegmentHandler(segmentService *service.SegmentService) *SegmentHandler {
 }
 
 func (h *SegmentHandler) CreateSegment(w http.ResponseWriter, r *http.Request) {
+	notEmpty := func(fl validator.FieldLevel) bool {
+		return len(fl.Field().String()) > 0
+	}
+
 	var input struct {
-		Slug string `json:"slug"`
+		Slug string `json:"slug" validate:"notempty"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&input)
@@ -41,6 +46,26 @@ func (h *SegmentHandler) CreateSegment(w http.ResponseWriter, r *http.Request) {
 			err.Error(),
 		)
 		return
+	}
+
+	validate := validator.New()
+	err = validate.RegisterValidation("notempty", notEmpty)
+	if err != nil {
+		response.WriteResponse(
+			w,
+			map[string]string{"Content-Type": "application/json"},
+			http.StatusInternalServerError,
+			err.Error(),
+		)
+	}
+	err = validate.Struct(input)
+	if err != nil {
+		response.WriteResponse(
+			w,
+			map[string]string{"Content-Type": "application/json"},
+			http.StatusUnprocessableEntity,
+			err.Error(),
+		)
 	}
 
 	segment, err := h.segmentService.Create(input.Slug)

@@ -2,10 +2,10 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 
 	"avito-tech-backend-test/internal/app/service"
