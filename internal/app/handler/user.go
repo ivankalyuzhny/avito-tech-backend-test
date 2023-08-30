@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
 
@@ -69,13 +70,29 @@ func (h *UserHandler) EditUserSegments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var input struct {
-		SegmentsAdd []string `json:"segments_add,omitempty"`
-		SegmentsDel []string `json:"segments_del,omitempty"`
+		SegmentsAdd []string `json:"segments_add" validate:"required"`
+		SegmentsDel []string `json:"segments_del" validate:"required"`
 	}
 	err = json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		response.WriteResponse(w, map[string]string{"Content-Type": "application/json"}, http.StatusBadRequest, err.Error())
+		response.WriteResponse(
+			w,
+			map[string]string{"Content-Type": "application/json"},
+			http.StatusBadRequest,
+			err.Error(),
+		)
 		return
+	}
+
+	validate := validator.New()
+	err = validate.Struct(input)
+	if err != nil {
+		response.WriteResponse(
+			w,
+			map[string]string{"Content-Type": "application/json"},
+			http.StatusUnprocessableEntity,
+			err.Error(),
+		)
 	}
 
 	err = h.userService.EditSegments(userID, input.SegmentsAdd, input.SegmentsDel)
