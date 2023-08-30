@@ -19,16 +19,6 @@ func NewUserService(userRepo *repository.UserRepository, segmentRepo *repository
 	}
 }
 
-func (s *UserService) Create(name string) (*model.User, error) {
-	user := model.NewUser(0)
-	insertID, err := s.userRepo.Create(user)
-	if err != nil {
-		return nil, err
-	}
-	user.ID = insertID
-	return user, nil
-}
-
 func (s *UserService) EditSegments(userID int64, segmentSlugsAdd []string, segmentSlugsDel []string) error {
 	exists, err := s.userRepo.Exists(userID)
 	if err != nil {

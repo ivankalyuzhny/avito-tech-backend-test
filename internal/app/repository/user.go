@@ -34,17 +34,6 @@ func (r *UserRepository) Exists(userID int64) (bool, error) {
 	return len(tmp) == 1, nil
 }
 
-func (r *UserRepository) Create(user *model.User) (int64, error) {
-	query := `INSERT INTO users VALUES ($1) RETURNING id`
-	var insertID int64
-	err := r.db.QueryRow(query).Scan(&insertID)
-	if err != nil {
-		return -1, fmt.Errorf("failed to create user:%w", err)
-	}
-	log.Printf("created user (id=%d)", insertID)
-	return insertID, err
-}
-
 func (r *UserRepository) AddToSegment(userID int64, segmentID int64) error {
 	query := `INSERT INTO user_segments (user_id, segment_id) VALUES ($1, $2)`
 	_, err := r.db.Exec(query, userID, segmentID)
