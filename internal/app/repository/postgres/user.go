@@ -22,16 +22,17 @@ func NewUserRepositoryPostgres(db *sqlx.DB) *UserRepositoryPostgres {
 }
 
 func (r *UserRepositoryPostgres) UserExists(userID int64) (bool, error) {
-	var tmp = make([]int64, 0)
+	var tmp int64
 	query := `SELECT 1 FROM users u WHERE u.id = $1 LIMIT 1`
-	err := r.db.Select(&tmp, query, userID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return false, nil
-		}
+	err := r.db.Get(&tmp, query, userID)
+	switch {
+	case err == nil:
+		return true, nil
+	case errors.Is(err, sql.ErrNoRows):
+		return false, nil
+	default:
 		return false, fmt.Errorf("failed to check user exists (id=%d): %w", userID, err)
 	}
-	return len(tmp) == 1, nil
 }
 
 func (r *UserRepositoryPostgres) AddToSegment(userID int64, segmentID int64) error {
